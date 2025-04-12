@@ -10,6 +10,22 @@
   body {
     @apply text-gray-900 bg-white;
   }
+
+  .text-primary {
+    color: var(--color-primary);
+  }
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+  .border-primary {
+    border-color: var(--color-primary);
+  }
+  .ring-primary {
+    --tw-ring-color: var(--color-primary);
+  }
+  .hover\:bg-primary-dark:hover {
+    background-color: #006298;
+  }
 }
 
 @layer components {
@@ -30,6 +46,17 @@
   }
 }
 
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 :root {
   font-family: "Montserrat", sans-serif;
   line-height: 1.5;
@@ -43,6 +70,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --color-primary: #0077b6;
 }
 
 a {

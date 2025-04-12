@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#007AFF", // We can adjust this based on your brand color
+        primary: "#0077B6", // We can adjust this based on your brand color
         secondary: "#64748B",
       },
       fontFamily: {

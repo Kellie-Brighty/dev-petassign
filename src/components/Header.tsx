@@ -1,6 +1,7 @@
 import logo from "../assets/logo.svg";
-
+import { useNavigate } from "react-router-dom";
 export default function Header() {
+  const navigate = useNavigate();
   return (
     <>
       {/* Spacer div to prevent content jump */}
@@ -12,24 +13,27 @@ export default function Header() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <a href="/" className="flex items-center">
+            <a
+              onClick={() => navigate("/")}
+              className="flex items-center cursor-pointer"
+            >
               <img src={logo} alt="PetAssign" className="h-6 w-auto" />
             </a>
 
             {/* Auth Buttons */}
             <div className="flex items-center gap-4">
-              <a
-                href="/login"
-                className="text-gray-600 hover:text-primary font-medium text-sm"
+              <p
+                onClick={() => navigate("/signin")}
+                className="text-gray-600 hover:text-primary font-medium text-sm cursor-pointer"
               >
                 Log in
-              </a>
-              <a
-                href="/signup"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md"
+              </p>
+              <p
+                onClick={() => navigate("/signup")}
+                className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
               >
                 Get Started
-              </a>
+              </p>
             </div>
           </div>
         </div>

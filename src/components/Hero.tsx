@@ -1,11 +1,12 @@
 import heroImage from "../assets/hero.svg";
+import { Link } from "react-router-dom";
 
 export default function Hero() {
   return (
     <section className="relative w-full overflow-hidden bg-white">
       {/* Subtle gradient background */}
       <div
-        className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-50/50 via-transparent to-transparent"
+        className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/5 via-transparent to-transparent"
         aria-hidden="true"
       />
 
@@ -30,7 +31,13 @@ export default function Hero() {
                 pets to pet supplies, all in one platform.
               </p>
 
-              <div className="flex flex-wrap gap-3 mt-8">
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                <Link
+                  to="/signup"
+                  className="inline-flex justify-center items-center px-6 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary-dark transition-colors duration-200"
+                >
+                  Get Started
+                </Link>
                 <button className="inline-flex items-center px-5 py-2.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                   <svg
                     className="w-5 h-5 mr-2 text-black"
