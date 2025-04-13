@@ -1,5 +1,4 @@
 // import React from "react";
-import { Link } from "react-router-dom";
 
 const categories = [
   {
@@ -43,10 +42,9 @@ export default function PetCategories() {
       <div className="lg:hidden w-full overflow-x-auto hide-scrollbar">
         <div className="flex space-x-4 w-max pb-2 px-4">
           {categories.map((category) => (
-            <Link
+            <div
               key={category.id}
-              to={`/category/${category.id}`}
-              className="flex flex-col items-center flex-shrink-0"
+              className="flex flex-col items-center flex-shrink-0 cursor-pointer"
             >
               <div
                 className={`w-20 h-20 ${category.color} rounded-md overflow-hidden flex items-center justify-center shadow-sm`}
@@ -61,7 +59,7 @@ export default function PetCategories() {
               <p className="mt-1 text-center text-xs font-medium text-gray-900 dark:text-white">
                 {category.name}
               </p>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
@@ -69,11 +67,7 @@ export default function PetCategories() {
       {/* Desktop design - grid layout */}
       <div className="hidden lg:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
         {categories.map((category) => (
-          <Link
-            key={category.id}
-            to={`/category/${category.id}`}
-            className="group"
-          >
+          <div key={category.id} className="group cursor-pointer">
             <div className="relative overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-md border border-gray-200 dark:border-[#1A2542]">
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
               <img
@@ -88,7 +82,7 @@ export default function PetCategories() {
                 </h3>
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </>
