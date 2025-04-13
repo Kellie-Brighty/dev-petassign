@@ -9,14 +9,16 @@ interface FAQItemProps {
 
 function FAQItem({ question, answer, isOpen, onClick }: FAQItemProps) {
   return (
-    <div className="border border-gray-200 rounded-lg">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg">
       <button
         className="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none bg-transparent"
         onClick={onClick}
       >
-        <span className="text-base font-medium text-gray-900">{question}</span>
+        <span className="text-base font-medium text-gray-900 dark:text-white">
+          {question}
+        </span>
         <svg
-          className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+          className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${
             isOpen ? "transform rotate-180" : ""
           }`}
           fill="none"
@@ -33,7 +35,7 @@ function FAQItem({ question, answer, isOpen, onClick }: FAQItemProps) {
       </button>
       {isOpen && (
         <div className="px-6 pb-4">
-          <p className="text-gray-600">{answer}</p>
+          <p className="text-gray-600 dark:text-gray-300">{answer}</p>
         </div>
       )}
     </div>
@@ -67,14 +69,14 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="relative w-full overflow-hidden bg-white py-24 lg:py-15">
+    <section className="relative w-full overflow-hidden bg-white dark:bg-[#101935] py-24 lg:py-15">
       <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-12">
           <div>
-            <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-primary text-sm font-medium">
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-primary text-sm font-medium">
               Frequently Asked Questions
             </div>
-            <h2 className="mt-4 text-3xl sm:text-4xl lg:text-[40px] font-bold text-gray-900">
+            <h2 className="mt-4 text-3xl sm:text-4xl lg:text-[40px] font-bold text-gray-900 dark:text-white">
               Have Questions About How Our Platform Works?
               <br />
               We've Got You Covered!

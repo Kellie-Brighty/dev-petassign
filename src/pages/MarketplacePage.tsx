@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BottomNavigation from "../components/dashboard/BottomNavigation";
+import ThemeToggle from "../components/ThemeToggle";
 
 // Add interface for category filter
 interface CategoryFilter {
@@ -13,7 +14,6 @@ interface CategoryFilter {
 const categoryFilters: CategoryFilter[] = [
   { id: "pet-food", name: "Pet food" },
   { id: "pets", name: "Pets" },
-  { id: "adoptions", name: "Adoptions" },
   { id: "mates", name: "Mates" },
 ];
 
@@ -108,44 +108,6 @@ const morePetFoodProducts = [
   },
 ];
 
-// Add adoption listings
-const adoptionListings = [
-  {
-    id: "golden-adopt",
-    title: "Buddy - Golden Retriever",
-    image:
-      "https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    description:
-      "Friendly 3-year-old Golden Retriever looking for a forever home",
-    age: "3 years",
-    gender: "Male",
-    location: "Queens, NY",
-    date: "2 days ago",
-  },
-  {
-    id: "tabby-adopt",
-    title: "Mittens - Tabby Cat",
-    image:
-      "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    description: "Sweet tabby cat needs a loving home",
-    age: "2 years",
-    gender: "Female",
-    location: "Brooklyn, NY",
-    date: "4 days ago",
-  },
-  {
-    id: "shepherd-adopt",
-    title: "Max - German Shepherd",
-    image:
-      "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    description: "Trained German Shepherd seeking active family",
-    age: "4 years",
-    gender: "Male",
-    location: "Manhattan, NY",
-    date: "6 days ago",
-  },
-];
-
 // Add mate listings
 const mateListings = [
   {
@@ -187,6 +149,28 @@ export default function MarketplacePage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("market");
   const [activeCategory, setActiveCategory] = useState("pets");
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -206,13 +190,15 @@ export default function MarketplacePage() {
       case "pet-food":
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800">Pet Food</h2>
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+              Pet Food
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {[...petFoodProducts, ...morePetFoodProducts].map((product) => (
                 <Link
                   key={product.id}
                   to={`/product/${product.id}`}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 overflow-hidden"
+                  className="bg-white dark:bg-[#101935] rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-[#1A2542] overflow-hidden"
                 >
                   <div className="h-40">
                     <img
@@ -222,7 +208,9 @@ export default function MarketplacePage() {
                     />
                   </div>
                   <div className="p-3">
-                    <h3 className="font-medium text-sm mb-1">{product.name}</h3>
+                    <h3 className="font-medium text-sm mb-1 dark:text-white">
+                      {product.name}
+                    </h3>
                     <div className="flex items-center mb-2">
                       <svg
                         className="w-4 h-4 text-yellow-400"
@@ -231,8 +219,10 @@ export default function MarketplacePage() {
                       >
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
-                      <span className="text-xs ml-1">{product.rating}</span>
-                      <span className="text-xs text-gray-500 ml-1">
+                      <span className="text-xs ml-1 dark:text-white">
+                        {product.rating}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
                         ({product.reviews})
                       </span>
                     </div>
@@ -249,32 +239,38 @@ export default function MarketplacePage() {
         return (
           <div className="space-y-6">
             {/* Featured listing for pets category */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6 border border-gray-200">
+            <div className="bg-white dark:bg-[#101935] rounded-xl shadow-md overflow-hidden mb-6 border border-gray-200 dark:border-[#1A2542]">
               <div className="grid grid-cols-1 md:grid-cols-2">
                 <div className="p-6 md:p-8">
-                  <h2 className="text-xl font-semibold mb-2">
+                  <h2 className="text-xl font-semibold mb-2 dark:text-white">
                     {featuredListing.title}
                   </h2>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
                     {featuredListing.description}
                   </p>
 
                   <div className="grid grid-cols-3 gap-6 mb-6">
                     <div>
-                      <p className="text-gray-500 text-sm">Price</p>
-                      <p className="text-lg font-semibold">
-                        ${featuredListing.price}
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">
+                        Price
+                      </p>
+                      <p className="text-lg font-semibold dark:text-white">
+                        ₦{featuredListing.price}
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-500 text-sm">Gender</p>
-                      <p className="text-lg font-semibold">
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">
+                        Gender
+                      </p>
+                      <p className="text-lg font-semibold dark:text-white">
                         {featuredListing.gender}
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-500 text-sm">Age</p>
-                      <p className="text-lg font-semibold">
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">
+                        Age
+                      </p>
+                      <p className="text-lg font-semibold dark:text-white">
                         {featuredListing.age}
                       </p>
                     </div>
@@ -287,10 +283,10 @@ export default function MarketplacePage() {
                       className="w-10 h-10 rounded-full mr-3"
                     />
                     <div>
-                      <p className="font-medium">
+                      <p className="font-medium dark:text-white">
                         {featuredListing.seller.name}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
                         {featuredListing.seller.timeAgo} •{" "}
                         {featuredListing.seller.location}
                       </p>
@@ -321,7 +317,7 @@ export default function MarketplacePage() {
               </div>
             </div>
 
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
               Pets for Sale
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -329,7 +325,7 @@ export default function MarketplacePage() {
                 <Link
                   to={`/pet/${listing.id}`}
                   key={listing.id}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 overflow-hidden"
+                  className="bg-white dark:bg-[#101935] rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-[#1A2542] overflow-hidden"
                 >
                   <div className="h-48">
                     <img
@@ -339,11 +335,13 @@ export default function MarketplacePage() {
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-medium mb-1">{listing.title}</h3>
+                    <h3 className="font-medium mb-1 dark:text-white">
+                      {listing.title}
+                    </h3>
                     <p className="text-primary font-semibold mb-2">
-                      ${listing.price}
+                      ₦{listing.price}
                     </p>
-                    <div className="flex justify-between items-center text-sm text-gray-500">
+                    <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
                       <span>{listing.location}</span>
                       <span>{listing.date}</span>
                     </div>
@@ -353,69 +351,17 @@ export default function MarketplacePage() {
             </div>
           </div>
         );
-      case "adoptions":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Pets for Adoption
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {adoptionListings.map((listing) => (
-                <div
-                  key={listing.id}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 overflow-hidden"
-                >
-                  <div className="h-48">
-                    <img
-                      src={listing.image}
-                      alt={listing.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-medium mb-1">{listing.title}</h3>
-                    <p className="text-gray-600 text-sm mb-3">
-                      {listing.description}
-                    </p>
-                    <div className="grid grid-cols-2 gap-2 mb-3">
-                      <div className="text-sm">
-                        <span className="text-gray-500">Age:</span>
-                        <span className="ml-1 font-medium">{listing.age}</span>
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-gray-500">Gender:</span>
-                        <span className="ml-1 font-medium">
-                          {listing.gender}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center text-sm text-gray-500">
-                      <span>{listing.location}</span>
-                      <span>{listing.date}</span>
-                    </div>
-                    <button
-                      className="w-full mt-3 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm"
-                      onClick={() => navigate(`/adoption/${listing.id}`)}
-                    >
-                      Adopt Me
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
       case "mates":
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
               Pets for Mating
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mateListings.map((listing) => (
                 <div
                   key={listing.id}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 overflow-hidden"
+                  className="bg-white dark:bg-[#101935] rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-[#1A2542] overflow-hidden"
                 >
                   <div className="h-48">
                     <img
@@ -425,23 +371,31 @@ export default function MarketplacePage() {
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-medium mb-1">{listing.title}</h3>
-                    <p className="text-gray-600 text-sm mb-3">
+                    <h3 className="font-medium mb-1 dark:text-white">
+                      {listing.title}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
                       {listing.description}
                     </p>
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       <div className="text-sm">
-                        <span className="text-gray-500">Age:</span>
-                        <span className="ml-1 font-medium">{listing.age}</span>
+                        <span className="text-gray-500 dark:text-gray-400">
+                          Age:
+                        </span>
+                        <span className="ml-1 font-medium dark:text-white">
+                          {listing.age}
+                        </span>
                       </div>
                       <div className="text-sm">
-                        <span className="text-gray-500">Gender:</span>
-                        <span className="ml-1 font-medium">
+                        <span className="text-gray-500 dark:text-gray-400">
+                          Gender:
+                        </span>
+                        <span className="ml-1 font-medium dark:text-white">
                           {listing.gender}
                         </span>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center text-sm text-gray-500">
+                    <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
                       <span>{listing.location}</span>
                       <span>{listing.date}</span>
                     </div>
@@ -472,7 +426,7 @@ export default function MarketplacePage() {
               {[...petFoodProducts, ...morePetFoodProducts].map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-sm"
+                  className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden shadow-sm"
                 >
                   <div className="w-full h-24 bg-gray-100">
                     <img
@@ -512,7 +466,7 @@ export default function MarketplacePage() {
       case "pets":
         return (
           <div className="px-2">
-            <div className="bg-white rounded-lg overflow-hidden shadow-sm mb-2">
+            <div className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden shadow-sm mb-2">
               <div className="flex relative">
                 <div className="w-1/2">
                   <img
@@ -547,7 +501,7 @@ export default function MarketplacePage() {
                 <div className="mt-1 flex space-x-3">
                   <div className="text-[10px]">
                     <span className="text-gray-500 text-[8px]">Price</span>
-                    <p className="font-medium">${featuredListing.price}</p>
+                    <p className="font-medium">₦{featuredListing.price}</p>
                   </div>
                   <div className="text-[10px]">
                     <span className="text-gray-500 text-[8px]">Gender</span>
@@ -565,7 +519,7 @@ export default function MarketplacePage() {
               {morePetListings.map((listing) => (
                 <div
                   key={listing.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-sm"
+                  className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden shadow-sm"
                 >
                   <div className="h-24">
                     <img
@@ -579,7 +533,7 @@ export default function MarketplacePage() {
                       {listing.title}
                     </h3>
                     <p className="text-primary font-medium text-[10px] mt-0.5">
-                      ${listing.price}
+                      ₦{listing.price}
                     </p>
                     <div className="flex justify-between items-center mt-0.5">
                       <span className="text-[8px] text-gray-500 truncate max-w-[70px]">
@@ -595,55 +549,6 @@ export default function MarketplacePage() {
             </div>
           </div>
         );
-      case "adoptions":
-        return (
-          <div className="px-2">
-            <div className="grid grid-cols-2 gap-2">
-              {adoptionListings.map((listing) => (
-                <div
-                  key={listing.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-sm"
-                >
-                  <div className="h-24">
-                    <img
-                      src={listing.image}
-                      alt={listing.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-1.5">
-                    <h3 className="font-medium text-[10px] truncate">
-                      {listing.title}
-                    </h3>
-                    <p className="text-[8px] text-gray-500 mt-0.5 line-clamp-1">
-                      {listing.description}
-                    </p>
-                    <div className="mt-0.5 flex justify-between">
-                      <div className="text-[8px]">
-                        <span className="text-gray-500">Age:</span>
-                        <span className="font-medium ml-0.5">
-                          {listing.age}
-                        </span>
-                      </div>
-                      <div className="text-[8px]">
-                        <span className="text-gray-500">Gender:</span>
-                        <span className="font-medium ml-0.5">
-                          {listing.gender}
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      className="w-full mt-1 py-1 text-center text-[8px] font-medium bg-primary text-white rounded-md"
-                      onClick={() => navigate(`/adoption/${listing.id}`)}
-                    >
-                      Adopt Me
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
       case "mates":
         return (
           <div className="px-2">
@@ -651,7 +556,7 @@ export default function MarketplacePage() {
               {mateListings.map((listing) => (
                 <div
                   key={listing.id}
-                  className="bg-white rounded-lg overflow-hidden shadow-sm"
+                  className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden shadow-sm"
                 >
                   <div className="h-24">
                     <img
@@ -699,12 +604,12 @@ export default function MarketplacePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 relative max-w-screen overflow-hidden">
+    <div className="min-h-screen bg-gray-100 dark:bg-[#0A1121] relative max-w-screen overflow-hidden">
       {/* Mobile Header */}
-      <header className="lg:hidden bg-white px-4 py-3 flex items-center sticky top-0 z-50 shadow-sm">
+      <header className="lg:hidden bg-white dark:bg-[#101935] px-4 py-3 flex items-center sticky top-0 z-50 shadow-sm border-b dark:border-[#1A2542]">
         <Link to="/home" className="p-1 mr-3">
           <svg
-            className="w-5 h-5 text-gray-700"
+            className="w-5 h-5 text-gray-700 dark:text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -720,11 +625,11 @@ export default function MarketplacePage() {
         <input
           type="text"
           placeholder="Search feed, animals, breeds, etc"
-          className="w-full py-2 pl-8 pr-4 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm bg-transparent"
+          className="w-full py-2 pl-8 pr-4 rounded-full border border-gray-200 dark:border-[#1A2542] dark:bg-[#1A2542] dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm bg-transparent"
         />
         <div className="absolute left-16 top-1/2 transform -translate-y-1/2">
           <svg
-            className="w-4 h-4 text-gray-400"
+            className="w-4 h-4 text-gray-400 dark:text-gray-500"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -740,26 +645,32 @@ export default function MarketplacePage() {
       </header>
 
       {/* Desktop Header */}
-      <header className="hidden lg:block bg-white shadow-md sticky top-0 z-50">
+      <header className="hidden lg:block bg-white dark:bg-[#101935] shadow-md sticky top-0 z-50 border-b dark:border-[#1A2542]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <Link to="/home" className="text-primary font-bold text-2xl mr-10">
               PetAssign
             </Link>
             <nav className="hidden lg:flex items-center space-x-8">
-              <Link to="/home" className="text-gray-500 hover:text-primary">
+              <Link
+                to="/home"
+                className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+              >
                 Home
               </Link>
               <Link to="/marketplace" className="text-primary font-medium">
                 Marketplace
               </Link>
               <Link
-                to="/community"
-                className="text-gray-500 hover:text-primary"
+                to="/adoptions"
+                className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
               >
-                Community
+                Adoptions
               </Link>
-              <Link to="/chat" className="text-gray-500 hover:text-primary">
+              <Link
+                to="/chats"
+                className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+              >
                 Messages
               </Link>
             </nav>
@@ -769,11 +680,11 @@ export default function MarketplacePage() {
               <input
                 type="text"
                 placeholder="Search marketplace..."
-                className="w-full py-2 pl-10 pr-4 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="w-full py-2 pl-10 pr-4 rounded-full border border-gray-200 dark:border-[#1A2542] dark:bg-[#1A2542] dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="w-5 h-5 text-gray-400 dark:text-gray-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -787,7 +698,8 @@ export default function MarketplacePage() {
                 </svg>
               </div>
             </div>
-            <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+            <ThemeToggle />
+            <button className="w-10 h-10 rounded-full bg-gray-100 dark:bg-[#1A2542] flex items-center justify-center text-gray-500 dark:text-gray-300">
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -816,25 +728,25 @@ export default function MarketplacePage() {
       {/* Main Content */}
       <main className="pb-28 lg:pb-28">
         {/* Mobile Category Tabs */}
-        <div className="lg:hidden bg-white pt-2 shadow-sm">
+        <div className="lg:hidden bg-white dark:bg-[#101935] pt-2 shadow-sm border-b dark:border-[#1A2542]">
           <div className="px-4 mb-1">
-            <div className="flex overflow-x-auto hide-scrollbar">
+            <div className="flex space-x-3 px-4 overflow-x-auto pb-3 scrollbar-hide">
               {categoryFilters.map((category) => (
                 <button
                   key={category.id}
-                  className={`px-3 py-1.5 text-xs font-medium mr-3 transition-colors whitespace-nowrap ${
+                  className={`px-4 py-2 rounded-full text-sm font-medium flex-shrink-0 ${
                     activeCategory === category.id
-                      ? "text-primary border-b-2 border-primary"
-                      : "text-gray-500"
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 dark:bg-[#1A2542] text-gray-700 dark:text-gray-200"
                   }`}
-                  onClick={() => handleCategoryChange(category.id)}
+                  onClick={() => setActiveCategory(category.id)}
                 >
                   {category.name}
                 </button>
               ))}
             </div>
           </div>
-          <div className="h-px bg-gray-200"></div>
+          <div className="h-px bg-gray-200 dark:bg-[#1A2542]"></div>
         </div>
 
         {/* Desktop Layout */}
@@ -866,7 +778,7 @@ export default function MarketplacePage() {
 
             {/* Right Column - Sidebar */}
             <div className="col-span-1">
-              <div className="bg-white rounded-xl shadow-sm p-5 mb-6 border border-gray-200">
+              <div className="bg-white dark:bg-[#101935] rounded-xl shadow-sm p-5 mb-6 border border-gray-200 dark:border-[#1A2542]">
                 <h3 className="font-semibold text-lg mb-4 text-gray-800">
                   Filter By
                 </h3>
@@ -918,7 +830,7 @@ export default function MarketplacePage() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+              <div className="bg-white dark:bg-[#101935] rounded-xl shadow-sm p-5 border border-gray-200 dark:border-[#1A2542]">
                 <h3 className="font-semibold text-lg mb-4 text-gray-800">
                   Recently Viewed
                 </h3>
@@ -929,7 +841,7 @@ export default function MarketplacePage() {
                       to={`/pet/${listing.id}`}
                       className="flex space-x-3 group hover:bg-gray-50 p-2 rounded-lg transition-colors"
                     >
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 shadow-sm">
+                      <div className="w-16 h-16 bg-gray-100 dark:bg-[#1A2542] rounded-lg overflow-hidden flex-shrink-0 shadow-sm">
                         <img
                           src={listing.image}
                           alt={listing.title}
@@ -941,7 +853,7 @@ export default function MarketplacePage() {
                           {listing.title}
                         </h4>
                         <p className="text-primary font-semibold text-sm">
-                          ${listing.price}
+                          ₦{listing.price}
                         </p>
                         <p className="text-gray-500 text-xs">{listing.date}</p>
                       </div>
@@ -961,8 +873,6 @@ export default function MarketplacePage() {
                 ? "Pet Food"
                 : activeCategory === "pets"
                 ? "Pets"
-                : activeCategory === "adoptions"
-                ? "Adoptions"
                 : "Mates"}
             </h2>
             <Link
@@ -996,7 +906,7 @@ export default function MarketplacePage() {
         </button>
       </div>
 
-      {/* Mobile Bottom Navigation - Fixed position */}
+      {/* Bottom Navigation - Show on both mobile and desktop */}
       <div className="fixed bottom-0 left-0 right-0 z-50">
         <BottomNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ThemeToggle from "../components/ThemeToggle";
 
 interface Message {
   id: string;
@@ -15,6 +16,9 @@ export default function ChatPage() {
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [newPrice, setNewPrice] = useState("200,000");
   const [petPrice, setPetPrice] = useState(300);
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -110,6 +114,25 @@ export default function ChatPage() {
     ] as Message[],
   };
 
+  // Listen for theme changes
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
+
   // Handle modal gestures
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartY(e.touches[0].clientY);
@@ -151,9 +174,15 @@ export default function ChatPage() {
     scrollToBottom();
   }, [chatData.messages]);
 
-  // Scroll to top when component mounts
+  // Add auto-scroll when opening the page
   useEffect(() => {
+    // Scroll to top when component mounts
     window.scrollTo(0, 0);
+
+    // Then scroll to the bottom of messages
+    setTimeout(() => {
+      scrollToBottom();
+    }, 100);
   }, []);
 
   const scrollToBottom = () => {
@@ -196,13 +225,13 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col w-screen">
+    <div className="min-h-screen bg-gray-100 dark:bg-[#0A1121] flex flex-col w-screen">
       {/* Header */}
-      <header className="px-4 py-3 flex items-center justify-between sticky top-0 z-50 bg-white border-b w-screen shadow-sm">
+      <header className="px-4 py-3 flex items-center justify-between sticky top-0 z-50 bg-white dark:bg-[#101935] border-b dark:border-[#1A2542] w-screen shadow-sm">
         <div className="flex items-center">
           <button onClick={() => navigate(-1)} className="p-1 mr-3">
             <svg
-              className="w-5 h-5 text-gray-700"
+              className="w-5 h-5 text-gray-700 dark:text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -220,10 +249,10 @@ export default function ChatPage() {
             <img
               src={chatData.otherUser.avatar}
               alt={chatData.otherUser.name}
-              className="w-8 h-8 rounded-full mr-3 object-cover border border-gray-200"
+              className="w-8 h-8 rounded-full mr-3 object-cover border border-gray-200 dark:border-[#1A2542]"
             />
             <div>
-              <h1 className="text-base font-medium text-gray-900">
+              <h1 className="text-base font-medium text-gray-900 dark:text-white">
                 {chatData.otherUser.name}
               </h1>
               <p className="text-xs text-green-500">
@@ -234,7 +263,8 @@ export default function ChatPage() {
         </div>
 
         <div className="flex items-center">
-          <button className="p-2 text-gray-600 hidden lg:block">
+          <ThemeToggle className="mr-2" />
+          <button className="p-2 text-gray-600 dark:text-gray-300 hidden lg:block">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -249,7 +279,7 @@ export default function ChatPage() {
               />
             </svg>
           </button>
-          <button className="p-2 text-gray-600">
+          <button className="p-2 text-gray-600 dark:text-gray-300">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -267,50 +297,38 @@ export default function ChatPage() {
         </div>
       </header>
 
-      {/* Transaction Summary - visible at the top of the chat */}
-      <div className="sticky top-[57px] z-40 bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-sm font-medium text-gray-900">
-            Pet Transaction Details
+      {/* Transaction information - Make it sticky */}
+      <div className="sticky top-[57px] z-40 p-4 bg-gray-50 dark:bg-[#101935] border-b dark:border-[#1A2542] flex justify-between items-center">
+        <div>
+          <h2 className="text-sm font-medium text-gray-900 dark:text-white">
+            Golden Retriever Puppy
           </h2>
-          <button
-            className="text-primary text-xs font-medium"
-            onClick={() => setShowPriceModal(true)}
-          >
-            Change Price
-          </button>
-        </div>
-
-        <div className="flex items-center">
-          <img
-            src="https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-            alt="Pet"
-            className="w-12 h-12 rounded-lg object-cover mr-3"
-          />
-          <div className="flex-1">
-            <h3 className="text-sm font-medium text-gray-900">
-              Siamese Kitten - 4 months
-            </h3>
-            <div className="flex justify-between items-center">
-              <p className="text-xs text-gray-500">Price negotiable</p>
-              <p className="text-sm font-semibold text-primary">
-                ${petPrice.toLocaleString()}
-              </p>
-            </div>
+          <div className="flex items-center mt-1">
+            <span className="text-xs text-green-500 font-medium">For Sale</span>
+            <span className="mx-1 text-gray-400 dark:text-gray-500">•</span>
+            <span className="text-xs text-gray-600 dark:text-gray-300">
+              ₦{petPrice}
+            </span>
           </div>
         </div>
+        <button
+          onClick={() => setShowPriceModal(true)}
+          className="text-sm text-primary font-medium bg-primary/10 px-3 py-1.5 rounded-md"
+        >
+          Edit price
+        </button>
       </div>
 
-      {/* Messages Container - Give space for header, transaction details, and message input */}
+      {/* Chat Messages - Adjust for better spacing */}
       <div
         ref={messageContainerRef}
-        className="flex-1 overflow-y-auto px-4 py-4 bg-gray-100 pb-20"
+        className="flex-1 p-4 overflow-y-auto bg-gray-50 dark:bg-[#0A1121]"
       >
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto space-y-6 pb-4">
           {chatData.messages.map((msg) => (
             <div
               key={msg.id}
-              className={`flex mb-3 ${
+              className={`flex ${
                 msg.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
@@ -318,36 +336,37 @@ export default function ChatPage() {
                 <img
                   src={chatData.otherUser.avatar}
                   alt={chatData.otherUser.name}
-                  className="w-8 h-8 rounded-full mr-2 object-cover self-end border border-gray-200"
+                  className="w-8 h-8 rounded-full mr-2 self-end object-cover border border-gray-200 dark:border-[#1A2542] mb-1"
                 />
               )}
-
               <div
-                className={`max-w-[75%] rounded-lg p-3 shadow-sm ${
+                className={`max-w-[75%] rounded-2xl px-4 py-3 whitespace-pre-wrap ${
                   msg.sender === "user"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-800 border border-gray-200"
+                    ? "bg-primary text-white rounded-tr-none"
+                    : "bg-white dark:bg-[#101935] text-gray-800 dark:text-white rounded-tl-none shadow-sm border border-gray-100 dark:border-[#1A2542]"
                 }`}
               >
-                <p className="whitespace-pre-wrap text-sm">{msg.text}</p>
-                <span
-                  className={`text-xs block mt-1 text-right ${
-                    msg.sender === "user" ? "text-white/70" : "text-gray-500"
+                <div className="text-sm">{msg.text}</div>
+                <div
+                  className={`text-right text-xs mt-1.5 ${
+                    msg.sender === "user"
+                      ? "text-white/70"
+                      : "text-gray-500 dark:text-gray-400"
                   }`}
                 >
                   {msg.timestamp}
-                </span>
+                </div>
               </div>
             </div>
           ))}
-          <div ref={messagesEndRef}></div>
+          <div ref={messagesEndRef} className="h-28" />
         </div>
       </div>
 
-      {/* Message Input - Fixed at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 shadow-md z-40">
-        <div className="flex items-center max-w-3xl mx-auto">
-          <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+      {/* Message Input - Fixed at bottom */}
+      <div className="p-3 bg-white dark:bg-[#101935] border-t dark:border-[#1A2542] sticky bottom-0 z-10">
+        <div className="flex items-center">
+          <button className="p-2 text-gray-500 dark:text-gray-400">
             <svg
               className="w-6 h-6"
               fill="none"
@@ -358,21 +377,20 @@ export default function ChatPage() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
           </button>
           <input
             type="text"
-            placeholder="Type a message..."
-            className="flex-1 py-3 px-4 bg-gray-50 border border-gray-200 rounded-full mx-2 focus:outline-none focus:ring-1 focus:ring-primary text-sm"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type a message..."
+            className="flex-1 py-2 px-4 bg-gray-100 dark:bg-[#1A2542] dark:text-white rounded-full focus:outline-none mx-2"
           />
           <button
-            className="p-2 text-white bg-primary rounded-full hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:hover:bg-primary"
-            disabled={!message.trim()}
             onClick={handleSendMessage}
+            className="p-2 text-primary rounded-full hover:bg-primary/10 transition-colors"
           >
             <svg
               className="w-6 h-6"
@@ -393,51 +411,56 @@ export default function ChatPage() {
 
       {/* Price Update Modal */}
       {showPriceModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex flex-col justify-end">
+        <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50 px-4">
           <div
             ref={modalRef}
-            className="bg-white rounded-t-2xl shadow-xl max-h-[60%] overflow-hidden"
+            className="w-full max-w-md bg-white dark:bg-[#101935] rounded-t-2xl p-5 animate-slide-up"
             style={getModalStyle()}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {/* Drag handle */}
-            <div className="flex justify-center py-2 cursor-grab">
-              <div className="w-10 h-1 bg-gray-300 rounded-full"></div>
-            </div>
+            {/* Drag indicator */}
+            <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-4"></div>
 
-            <div className="p-4 pb-28">
-              <h2 className="text-xl font-semibold mb-4 text-gray-900">
-                Update Pet Price
-              </h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Update Price
+            </h2>
 
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  New Price ($)
-                </label>
+            <div className="mb-4">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                New Price
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                  ₦
+                </span>
                 <input
                   type="text"
+                  id="price"
                   value={newPrice}
                   onChange={(e) => setNewPrice(e.target.value)}
-                  className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary text-xl font-medium"
+                  className="w-full px-7 py-2 border border-gray-300 dark:border-[#1A2542] dark:bg-[#1A2542] dark:text-white rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  className="py-3 px-4 border border-gray-200 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
-                  onClick={() => setShowPriceModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="py-3 px-4 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-md"
-                  onClick={handleUpdatePrice}
-                >
-                  Update Price
-                </button>
-              </div>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowPriceModal(false)}
+                className="flex-1 py-2 text-center border border-gray-300 dark:border-[#1A2542] text-gray-700 dark:text-white rounded-md hover:bg-gray-50 dark:hover:bg-[#1A2542] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdatePrice}
+                className="flex-1 py-2 text-center bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+              >
+                Update
+              </button>
             </div>
           </div>
         </div>

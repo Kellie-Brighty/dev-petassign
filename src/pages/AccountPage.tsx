@@ -1,15 +1,46 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomNavigation from "../components/dashboard/BottomNavigation";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function AccountPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("account");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Handle logout function
+  const handleLogout = () => {
+    // Here you would typically clear user authentication tokens and state
+    // For this example, we just navigate to the login page
+    navigate("/signin");
+  };
 
   // This would normally come from your authentication system
   const userProfile = {
@@ -113,16 +144,49 @@ export default function AccountPage() {
       ),
       onClick: () => navigate("/sales"),
     },
+    {
+      id: "appearance",
+      title: "Appearance",
+      description: "Light and Dark Mode",
+      icon: (
+        <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
+          <svg
+            className="w-5 h-5 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            />
+          </svg>
+        </div>
+      ),
+      renderContent: () => (
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            Dark Mode
+          </span>
+          <ThemeToggle />
+        </div>
+      ),
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col w-screen">
+    <div className="min-h-screen bg-white dark:bg-[#0A1121] flex flex-col w-screen">
+      {/* Debug Component */}
+      {/* <ThemeTestComponent /> */}
+
       {/* Header */}
-      <header className="px-4 py-3 flex items-center justify-between sticky top-0 z-50 bg-white border-b w-screen shadow-sm">
+      <header className="px-4 py-3 flex items-center justify-between sticky top-0 z-50 bg-white dark:bg-[#101935] border-b border-gray-200 dark:border-[#1A2542] w-screen shadow-sm">
         <div className="flex items-center">
           <button onClick={() => navigate(-1)} className="p-1 mr-2 lg:hidden">
             <svg
-              className="w-5 h-5 text-gray-700"
+              className="w-5 h-5 text-gray-700 dark:text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -135,14 +199,17 @@ export default function AccountPage() {
               />
             </svg>
           </button>
-          <h1 className="text-lg font-medium">Account</h1>
+          <h1 className="text-lg font-medium text-gray-900 dark:text-white">
+            Account
+          </h1>
         </div>
 
         {/* Desktop header elements */}
         <div className="hidden lg:flex items-center space-x-4">
-          <button className="bg-gray-100 rounded-full p-2">
+          <ThemeToggle className="mr-2" />
+          <button className="bg-gray-100 dark:bg-[#1A2542] rounded-full p-2">
             <svg
-              className="w-5 h-5 text-gray-600"
+              className="w-5 h-5 text-gray-600 dark:text-gray-300"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -161,9 +228,9 @@ export default function AccountPage() {
               />
             </svg>
           </button>
-          <button className="bg-gray-100 rounded-full p-2">
+          <button className="bg-gray-100 dark:bg-[#1A2542] rounded-full p-2">
             <svg
-              className="w-5 h-5 text-gray-600"
+              className="w-5 h-5 text-gray-600 dark:text-gray-300"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -183,7 +250,7 @@ export default function AccountPage() {
       <div className="flex-1 overflow-y-auto pb-28">
         {/* User Profile Section */}
         <div className="p-4 flex flex-col items-center lg:flex-row lg:items-start lg:justify-center lg:py-8">
-          <div className="flex flex-col items-center lg:flex-row lg:items-center lg:bg-white lg:rounded-xl lg:shadow-md lg:p-6 lg:max-w-3xl lg:w-full border border-gray-200">
+          <div className="flex flex-col items-center lg:flex-row lg:items-center lg:bg-white lg:dark:bg-[#101935] lg:rounded-xl lg:shadow-md lg:p-6 lg:max-w-3xl lg:w-full border border-gray-200 dark:border-[#1A2542]">
             {/* User Avatar */}
             <div className="mb-2 lg:mb-0 lg:mr-6">
               <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary shadow-md">
@@ -197,125 +264,127 @@ export default function AccountPage() {
 
             {/* User Info */}
             <div className="text-center lg:text-left lg:flex-1">
-              <h2 className="text-lg font-medium text-gray-900">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                 {userProfile.name}
               </h2>
-              <p className="text-sm text-gray-500">{userProfile.username}</p>
-
-              {/* Desktop Edit Profile Button */}
-              <div className="hidden lg:block mt-2">
-                <button
-                  onClick={() => navigate("/my-profile")}
-                  className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors shadow-md hover:shadow-lg"
-                >
-                  Edit Profile
-                </button>
-              </div>
+              <p className="text-gray-500 dark:text-gray-400">
+                {userProfile.username}
+              </p>
             </div>
 
-            {/* Desktop Actions */}
-            <div className="hidden lg:flex space-x-4 ml-auto">
-              <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors border border-gray-200">
-                Settings
+            {/* Edit Profile Button - Only on desktop */}
+            <div className="hidden lg:block">
+              <button
+                onClick={() => navigate("/edit-profile")}
+                className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              >
+                Edit Profile
               </button>
-              <button className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors shadow-md">
+            </div>
+          </div>
+        </div>
+
+        {/* Menu Section */}
+        <div className="px-4 mt-2 mb-4 lg:flex lg:justify-center">
+          <div className="lg:max-w-3xl lg:w-full">
+            <div className="bg-white dark:bg-[#101935] rounded-xl shadow p-4 space-y-4 border border-gray-200 dark:border-[#1A2542]">
+              {menuItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="border-b last:border-b-0 dark:border-[#1A2542] pb-4 last:pb-0"
+                >
+                  <div
+                    className="flex items-center py-2 cursor-pointer"
+                    onClick={item.onClick}
+                  >
+                    {item.icon}
+                    <div className="ml-4 flex-1">
+                      <h3 className="font-medium text-gray-900 dark:text-white">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {item.description}
+                      </p>
+                    </div>
+                    {!item.renderContent && (
+                      <svg
+                        className="w-5 h-5 text-gray-400 dark:text-gray-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  {item.renderContent && (
+                    <div className="mt-2 ml-14">{item.renderContent()}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Edit Profile Button - Only on mobile */}
+            <div className="mt-4 lg:hidden">
+              <button
+                onClick={() => navigate("/edit-profile")}
+                className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-medium transition-colors shadow-sm"
+              >
+                Edit Profile
+              </button>
+            </div>
+
+            {/* Logout Button */}
+            <div className="mt-4">
+              <button
+                onClick={() => setShowLogoutModal(true)}
+                className="w-full py-3 text-red-500 dark:text-red-400 font-medium border border-red-500 dark:border-red-400 rounded-lg shadow-sm hover:bg-red-50 dark:hover:bg-[#1A1A35] transition-colors"
+              >
                 Logout
               </button>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Menu Items */}
-        <div className="px-4 pb-4 lg:flex lg:justify-center">
-          <div className="space-y-3 lg:max-w-3xl lg:w-full">
-            {menuItems.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-lg p-4 flex items-center shadow-md hover:shadow-lg transition-shadow cursor-pointer border border-gray-200"
-                onClick={item.onClick}
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0">
+        <BottomNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-[#101935] rounded-xl shadow-xl max-w-md w-full p-5 transform transition-all animate-fade-in">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+              Confirm Logout
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-5">
+              Are you sure you want to log out? You will need to log in again to
+              access your account.
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 py-2.5 border border-gray-300 dark:border-[#1A2542] text-gray-700 dark:text-white rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-[#1A2542] transition-colors"
               >
-                {item.icon}
-                <div className="ml-4 flex-1">
-                  <h3 className="text-sm font-medium text-gray-800">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-gray-500">{item.description}</p>
-                </div>
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-            ))}
-
-            {/* Desktop Additional Menu Items */}
-            <div className="hidden lg:block space-y-3 mt-6">
-              <div className="bg-white rounded-lg p-4 shadow-md border border-gray-200">
-                <h3 className="font-medium text-gray-800">App Settings</h3>
-                <div className="mt-3 space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Notifications</span>
-                    <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                      <input
-                        type="checkbox"
-                        id="notification"
-                        name="notification"
-                        className="sr-only peer"
-                        defaultChecked
-                      />
-                      <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:bg-primary peer-checked:after:translate-x-full after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Dark Mode</span>
-                    <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                      <input
-                        type="checkbox"
-                        id="darkmode"
-                        name="darkmode"
-                        className="sr-only peer"
-                      />
-                      <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:bg-primary peer-checked:after:translate-x-full after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg p-4 shadow-md border border-gray-200">
-                <h3 className="font-medium text-gray-800">Help & Support</h3>
-                <div className="mt-3 space-y-2">
-                  <button className="w-full text-left text-sm text-gray-600 py-2 hover:text-primary">
-                    Contact Support
-                  </button>
-                  <button className="w-full text-left text-sm text-gray-600 py-2 hover:text-primary">
-                    FAQs
-                  </button>
-                  <button className="w-full text-left text-sm text-gray-600 py-2 hover:text-primary">
-                    Privacy Policy
-                  </button>
-                  <button className="w-full text-left text-sm text-gray-600 py-2 hover:text-primary">
-                    Terms of Service
-                  </button>
-                </div>
-              </div>
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Mobile Bottom Navigation */}
-      <div>
-        <BottomNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
-      </div>
+      )}
     </div>
   );
 }

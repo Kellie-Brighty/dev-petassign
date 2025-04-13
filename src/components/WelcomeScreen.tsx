@@ -1,10 +1,33 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import onboardingImage from "../assets/onboarding-two.svg";
+import ThemeToggle from "./ThemeToggle";
 
 export default function WelcomeScreen() {
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(8);
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -32,10 +55,15 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-white w-screen overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-[#0A1121] w-screen overflow-x-hidden">
       <div className="flex min-h-screen">
         {/* Left Section - Image (Hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 items-center justify-center p-8">
+        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 dark:bg-[#101935]/50 items-center justify-center p-8 relative">
+          {/* Theme toggle for desktop */}
+          <div className="absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
+
           <div className="max-w-md">
             <img
               src={onboardingImage}
@@ -43,10 +71,10 @@ export default function WelcomeScreen() {
               className="w-full h-auto"
             />
             <div className="mt-8 text-center">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Welcome to Pet World!
               </h2>
-              <p className="mt-4 text-gray-600">
+              <p className="mt-4 text-gray-600 dark:text-gray-300">
                 You're all set to explore our vibrant community
               </p>
             </div>
@@ -54,7 +82,12 @@ export default function WelcomeScreen() {
         </div>
 
         {/* Right Section - Welcome Content */}
-        <div className="w-full lg:w-1/2 flex flex-col px-4 lg:px-12 h-screen lg:h-auto">
+        <div className="w-full lg:w-1/2 flex flex-col px-4 lg:px-12 h-screen lg:h-auto relative">
+          {/* Mobile theme toggle */}
+          <div className="lg:hidden absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
+
           <div className="flex-1 flex flex-col items-center justify-center">
             <div className="w-full max-w-md mx-auto flex flex-col items-center">
               {/* Paw Icon - Only visible on mobile */}
@@ -94,10 +127,10 @@ export default function WelcomeScreen() {
 
               {/* Welcome Text - Mobile version */}
               <div className="lg:hidden">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">
                   Welcome to Pet World!
                 </h1>
-                <p className="text-gray-600 text-center mb-12">
+                <p className="text-gray-600 dark:text-gray-300 text-center mb-12">
                   All done! Explore pets, feeds, and connect with our vibrant
                   community!
                 </p>
@@ -105,17 +138,17 @@ export default function WelcomeScreen() {
 
               {/* Welcome Content - Desktop version */}
               <div className="hidden lg:block mb-8 text-center">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   Success! Your profile is ready.
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-300">
                   You're all set to explore pets, connect with others, and enjoy
                   everything Pet World has to offer.
                 </p>
               </div>
 
               {/* Countdown display - Both versions */}
-              <div className="text-sm text-gray-500 mb-8">
+              <div className="text-sm text-gray-500 dark:text-gray-400 mb-8">
                 Redirecting in {countdown} seconds...
               </div>
 
@@ -131,7 +164,7 @@ export default function WelcomeScreen() {
 
               {/* Home indicator - Mobile Only */}
               <div className="w-full flex justify-center mt-8 lg:hidden">
-                <div className="w-1/3 h-1 rounded-full bg-gray-300"></div>
+                <div className="w-1/3 h-1 rounded-full bg-gray-300 dark:bg-gray-700"></div>
               </div>
             </div>
           </div>

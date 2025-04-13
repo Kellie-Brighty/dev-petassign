@@ -2,12 +2,35 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomNavigation from "../components/dashboard/BottomNavigation";
 import ChatOverlay from "../components/ChatOverlay";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function MateDetailsPage() {
   const navigate = useNavigate();
   // const { id } = useParams();
   const [activeTab, setActiveTab] = useState("market");
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -41,12 +64,12 @@ export default function MateDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 relative">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0A1121] relative">
       {/* Header */}
-      <header className="bg-white px-4 py-3 flex items-center sticky top-0 z-50 shadow-sm">
+      <header className="bg-white dark:bg-[#101935] px-4 py-3 flex items-center sticky top-0 z-50 shadow-sm border-b dark:border-[#1A2542]">
         <button onClick={() => navigate(-1)} className="p-1 mr-3">
           <svg
-            className="w-5 h-5 text-gray-700"
+            className="w-5 h-5 text-gray-700 dark:text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -62,11 +85,11 @@ export default function MateDetailsPage() {
         <input
           type="text"
           placeholder="Search feed, animals, breeds, etc"
-          className="w-full py-2 pl-8 pr-4 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+          className="w-full py-2 pl-8 pr-4 rounded-full border border-gray-200 dark:border-[#1A2542] dark:bg-[#1A2542] dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
         />
         <div className="absolute left-16 top-1/2 transform -translate-y-1/2">
           <svg
-            className="w-4 h-4 text-gray-400"
+            className="w-4 h-4 text-gray-400 dark:text-gray-500"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -79,12 +102,15 @@ export default function MateDetailsPage() {
             />
           </svg>
         </div>
+        <div className="ml-2">
+          <ThemeToggle />
+        </div>
       </header>
 
       {/* Main Content */}
       <main className="pb-20">
         {/* Pet Image */}
-        <div className="w-full aspect-square bg-white">
+        <div className="w-full aspect-square bg-white dark:bg-[#101935]">
           <img
             src={mateDetails.image}
             alt={mateDetails.name}
@@ -93,8 +119,10 @@ export default function MateDetailsPage() {
         </div>
 
         {/* Owner Info */}
-        <div className="p-4 bg-white">
-          <h1 className="text-lg font-semibold">{mateDetails.title}</h1>
+        <div className="p-4 bg-white dark:bg-[#101935]">
+          <h1 className="text-lg font-semibold dark:text-white">
+            {mateDetails.title}
+          </h1>
           <div className="mt-3 flex items-center">
             <div
               className="flex items-center cursor-pointer"
@@ -111,53 +139,71 @@ export default function MateDetailsPage() {
                 alt={mateDetails.owner.name}
                 className="w-6 h-6 rounded-full mr-2"
               />
-              <span className="text-sm font-medium">
+              <span className="text-sm font-medium dark:text-white">
                 {mateDetails.owner.name}
               </span>
             </div>
             <span className="mx-2 text-gray-400">•</span>
-            <span className="text-sm text-gray-500">{mateDetails.posted}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {mateDetails.posted}
+            </span>
           </div>
         </div>
 
         {/* Description Section */}
-        <div className="mt-2 p-4 bg-white">
-          <h2 className="text-base font-medium mb-2">Description</h2>
-          <p className="text-sm text-gray-700 leading-relaxed">
+        <div className="mt-2 p-4 bg-white dark:bg-[#101935]">
+          <h2 className="text-base font-medium mb-2 dark:text-white">
+            Description
+          </h2>
+          <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
             {mateDetails.description}
           </p>
         </div>
 
         {/* Pet Details */}
-        <div className="mt-2 p-4 bg-white">
-          <h2 className="text-base font-medium mb-3">Pet Details</h2>
+        <div className="mt-2 p-4 bg-white dark:bg-[#101935]">
+          <h2 className="text-base font-medium mb-3 dark:text-white">
+            Pet Details
+          </h2>
 
           <div className="grid grid-cols-2 gap-y-4">
             <div>
-              <p className="text-xs text-gray-500">Gender</p>
-              <p className="text-sm font-medium">{mateDetails.gender}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Gender</p>
+              <p className="text-sm font-medium dark:text-white">
+                {mateDetails.gender}
+              </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500">Age</p>
-              <p className="text-sm font-medium">{mateDetails.age}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Age</p>
+              <p className="text-sm font-medium dark:text-white">
+                {mateDetails.age}
+              </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500">Breed</p>
-              <p className="text-sm font-medium">{mateDetails.breed}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Breed</p>
+              <p className="text-sm font-medium dark:text-white">
+                {mateDetails.breed}
+              </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500">Health Status</p>
-              <p className="text-sm font-medium">{mateDetails.healthStatus}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Health Status
+              </p>
+              <p className="text-sm font-medium dark:text-white">
+                {mateDetails.healthStatus}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Location Section */}
-        <div className="mt-2 p-4 bg-white">
-          <h2 className="text-base font-medium mb-2">Location</h2>
+        <div className="mt-2 p-4 bg-white dark:bg-[#101935]">
+          <h2 className="text-base font-medium mb-2 dark:text-white">
+            Location
+          </h2>
           <div className="flex items-start">
             <svg
-              className="w-4 h-4 text-gray-600 mt-0.5 mr-2 flex-shrink-0"
+              className="w-4 h-4 text-gray-600 dark:text-gray-400 mt-0.5 mr-2 flex-shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -176,11 +222,11 @@ export default function MateDetailsPage() {
               />
             </svg>
             <div>
-              <p className="text-sm font-medium">
+              <p className="text-sm font-medium dark:text-white">
                 {mateDetails.owner.location.city},{" "}
                 {mateDetails.owner.location.region}
               </p>
-              <p className="text-xs text-gray-500 mt-0.5">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                 {mateDetails.owner.location.fullAddress}
               </p>
             </div>
@@ -188,11 +234,13 @@ export default function MateDetailsPage() {
         </div>
 
         {/* Contact Details */}
-        <div className="mt-2 p-4 bg-white">
-          <h2 className="text-base font-medium mb-2">Contact Details</h2>
+        <div className="mt-2 p-4 bg-white dark:bg-[#101935]">
+          <h2 className="text-base font-medium mb-2 dark:text-white">
+            Contact Details
+          </h2>
           <div className="flex items-center space-x-3 mt-2">
             <svg
-              className="w-4 h-4 text-gray-600"
+              className="w-4 h-4 text-gray-600 dark:text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -204,13 +252,15 @@ export default function MateDetailsPage() {
                 d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
               />
             </svg>
-            <span className="text-sm">{mateDetails.owner.contact}</span>
+            <span className="text-sm dark:text-white">
+              {mateDetails.owner.contact}
+            </span>
           </div>
         </div>
       </main>
 
       {/* Bottom Fixed Button */}
-      <div className="fixed bottom-16 left-0 right-0 p-4 bg-white border-t flex justify-center">
+      <div className="fixed bottom-16 left-0 right-0 p-4 bg-white dark:bg-[#101935] border-t dark:border-[#1A2542] flex justify-center">
         <button
           className="w-full bg-primary text-white py-3 rounded-lg font-medium"
           onClick={() => setIsChatOpen(true)}

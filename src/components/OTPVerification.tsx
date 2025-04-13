@@ -1,16 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import welcomeImage from "../assets/welcome.svg";
+import ThemeToggle from "./ThemeToggle";
 
 export default function OTPVerification() {
   const [otp, setOtp] = useState("");
   const phoneNumber = "+234 81 37496017"; // This would come from the previous step
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+
     // Handle OTP verification logic here
-    navigate("/complete-profile");
+    setTimeout(() => {
+      navigate("/complete-profile");
+      setIsLoading(false);
+    }, 1000);
   };
 
   const handleResendOTP = () => {
@@ -27,11 +56,11 @@ export default function OTPVerification() {
   // };
 
   return (
-    <div className="min-h-screen bg-white w-screen overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-[#0A1121] w-screen overflow-x-hidden">
       {/* Mobile Header - Only visible on mobile */}
       <div className="lg:hidden">
-        <div className="px-4 py-4 flex items-center">
-          <Link to="/" className="text-gray-900">
+        <div className="px-4 py-4 flex items-center justify-between">
+          <Link to="/" className="text-gray-900 dark:text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -47,12 +76,18 @@ export default function OTPVerification() {
               />
             </svg>
           </Link>
+          <ThemeToggle />
         </div>
       </div>
 
       <div className="flex min-h-[calc(100vh-64px)]">
         {/* Left Section - Image (Hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 items-center justify-center p-8">
+        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 dark:bg-[#101935]/50 items-center justify-center p-8 relative">
+          {/* Theme toggle for desktop */}
+          <div className="absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
+
           <div className="max-w-md">
             <img
               src={welcomeImage}
@@ -60,10 +95,10 @@ export default function OTPVerification() {
               className="w-full h-auto"
             />
             <div className="mt-8 text-center">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Verify Your Account
               </h2>
-              <p className="mt-4 text-gray-600">
+              <p className="mt-4 text-gray-600 dark:text-gray-300">
                 We're excited to have you join our pet-loving community. Please
                 verify your account to continue.
               </p>
@@ -77,7 +112,7 @@ export default function OTPVerification() {
             <div className="w-full max-w-md mx-auto flex flex-col h-full lg:h-auto">
               <div className="mb-8">
                 <div className="flex items-center justify-between">
-                  <h1 className="text-2xl font-semibold text-gray-900">
+                  <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
                     Enter OTP
                   </h1>
                   <button
@@ -87,10 +122,12 @@ export default function OTPVerification() {
                     Edit number
                   </button>
                 </div>
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2 text-gray-600 dark:text-gray-300">
                   Enter the 6-digit pin we sent to your number
                 </p>
-                <p className="mt-1 text-gray-900 font-medium">{phoneNumber}</p>
+                <p className="mt-1 text-gray-900 dark:text-white font-medium">
+                  {phoneNumber}
+                </p>
               </div>
 
               <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
@@ -98,7 +135,7 @@ export default function OTPVerification() {
                   <div>
                     <label
                       htmlFor="otp"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
                       Enter OTP
                     </label>
@@ -112,13 +149,15 @@ export default function OTPVerification() {
                         const value = e.target.value.replace(/[^0-9]/g, "");
                         if (value.length <= 6) setOtp(value);
                       }}
-                      className="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-primary focus:border-primary text-lg tracking-wider font-medium"
+                      className="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-[#1A2542] border border-gray-200 dark:border-[#1A2542] rounded-lg focus:ring-primary focus:border-primary text-lg tracking-wider font-medium dark:text-white"
                       placeholder="643523"
                     />
                   </div>
 
                   <div className="flex items-center justify-between text-sm">
-                    <p className="text-gray-600">Didn't receive the code?</p>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Didn't receive the code?
+                    </p>
                     <button
                       type="button"
                       onClick={handleResendOTP}
@@ -132,9 +171,40 @@ export default function OTPVerification() {
                 <div className="mt-auto pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 w-full lg:pb-4">
                   <button
                     type="submit"
-                    className="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary-dark transition-colors duration-200"
+                    disabled={isLoading}
+                    className={`w-full bg-primary text-white py-3 px-4 rounded-lg transition-colors duration-200 ${
+                      isLoading
+                        ? "opacity-70 cursor-not-allowed"
+                        : "hover:bg-primary-dark"
+                    }`}
                   >
-                    Continue
+                    {isLoading ? (
+                      <span className="flex items-center justify-center">
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Verifying...
+                      </span>
+                    ) : (
+                      "Continue"
+                    )}
                   </button>
                 </div>
               </form>

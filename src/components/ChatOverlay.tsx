@@ -224,7 +224,7 @@ export default function ChatOverlay({
         {/* Pet Price Banner - Only shown if petPrice is provided */}
         {petPrice && (
           <div className="bg-gray-100 p-3 flex justify-between items-center">
-            <div className="text-sm font-medium">Pet Price: ${petPrice}</div>
+            <div className="text-sm font-medium">Pet Price: ₦{petPrice}</div>
             <button className="bg-primary text-white py-1 px-4 rounded-full text-sm font-medium">
               Change
             </button>

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import onboardingImage from "../assets/onboarding-two.svg";
+import ThemeToggle from "./ThemeToggle";
 
 const languages = [
   "English",
@@ -15,6 +16,28 @@ export default function Languages() {
   const navigate = useNavigate();
   const [primaryLanguage, setPrimaryLanguage] = useState("English");
   const [secondaryLanguage, setSecondaryLanguage] = useState("Spanish");
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,11 +47,11 @@ export default function Languages() {
   };
 
   return (
-    <div className="min-h-screen bg-white w-screen overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-[#0A1121] w-screen overflow-x-hidden">
       {/* Mobile Header - Only visible on mobile */}
       <div className="lg:hidden">
-        <div className="px-4 py-4 flex items-center">
-          <Link to="/location" className="text-gray-900">
+        <div className="px-4 py-4 flex items-center justify-between">
+          <Link to="/location" className="text-gray-900 dark:text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -44,12 +67,18 @@ export default function Languages() {
               />
             </svg>
           </Link>
+          <ThemeToggle />
         </div>
       </div>
 
       <div className="flex min-h-[calc(100vh-64px)]">
         {/* Left Section - Image (Hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 items-center justify-center p-8">
+        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 dark:bg-[#101935]/50 items-center justify-center p-8 relative">
+          {/* Theme toggle for desktop */}
+          <div className="absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
+
           <div className="max-w-md">
             <img
               src={onboardingImage}
@@ -57,10 +86,10 @@ export default function Languages() {
               className="w-full h-auto"
             />
             <div className="mt-8 text-center">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Select Your Languages
               </h2>
-              <p className="mt-4 text-gray-600">
+              <p className="mt-4 text-gray-600 dark:text-gray-300">
                 Tell us which languages you speak to communicate with others
               </p>
             </div>
@@ -72,10 +101,10 @@ export default function Languages() {
           <div className="flex-1 flex flex-col lg:justify-center">
             <div className="w-full max-w-md mx-auto flex flex-col h-full lg:h-auto">
               <div className="mb-8">
-                <h1 className="text-2xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
                   Languages
                 </h1>
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2 text-gray-600 dark:text-gray-300">
                   Select the language you speak to communicate easily with
                   others.
                 </p>
@@ -86,7 +115,7 @@ export default function Languages() {
                   <div>
                     <label
                       htmlFor="primaryLanguage"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                     >
                       Language
                     </label>
@@ -96,7 +125,7 @@ export default function Languages() {
                         name="primaryLanguage"
                         value={primaryLanguage}
                         onChange={(e) => setPrimaryLanguage(e.target.value)}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors duration-200 bg-gray-50 appearance-none pr-10"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-[#1A2542] focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors duration-200 bg-gray-50 dark:bg-[#1A2542] dark:text-white appearance-none pr-10"
                       >
                         {languages.map((lang) => (
                           <option key={lang} value={lang}>
@@ -104,7 +133,7 @@ export default function Languages() {
                           </option>
                         ))}
                       </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
                         <svg
                           className="h-4 w-4"
                           fill="currentColor"
@@ -123,7 +152,7 @@ export default function Languages() {
                   <div>
                     <label
                       htmlFor="secondaryLanguage"
-                      className="block text-sm font-medium text-gray-700 mb-1"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                     >
                       Language 2 (Optional)
                     </label>
@@ -133,7 +162,7 @@ export default function Languages() {
                         name="secondaryLanguage"
                         value={secondaryLanguage}
                         onChange={(e) => setSecondaryLanguage(e.target.value)}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors duration-200 bg-gray-50 appearance-none pr-10"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-[#1A2542] focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors duration-200 bg-gray-50 dark:bg-[#1A2542] dark:text-white appearance-none pr-10"
                       >
                         {languages.map((lang) => (
                           <option key={lang} value={lang}>
@@ -141,7 +170,7 @@ export default function Languages() {
                           </option>
                         ))}
                       </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
                         <svg
                           className="h-4 w-4"
                           fill="currentColor"
@@ -174,4 +203,3 @@ export default function Languages() {
     </div>
   );
 }
- 

@@ -15,6 +15,7 @@ import HomePage from "./pages/HomePage";
 import LandingPage from "./pages/LandingPage";
 import PetDetailsPage from "./pages/PetDetailsPage";
 import MarketplacePage from "./pages/MarketplacePage";
+import AdoptionsPage from "./pages/AdoptionsPage";
 import MateDetailsPage from "./pages/MateDetailsPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import MyProfilePage from "./pages/MyProfilePage";
@@ -51,6 +52,8 @@ function App() {
         <Route path="/pet/:id" element={<PetDetailsPage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/marketplace/:category" element={<MarketplacePage />} />
+        <Route path="/adoptions" element={<AdoptionsPage />} />
+        <Route path="/adoption/:id" element={<PetDetailsPage />} />
         <Route path="/mate/:id" element={<MateDetailsPage />} />
         <Route path="/user/:userId" element={<UserProfilePage />} />
         <Route path="/my-profile" element={<MyProfilePage />} />

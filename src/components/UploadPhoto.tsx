@@ -1,12 +1,35 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import onboardingImage from "../assets/onboarding-two.svg";
+import ThemeToggle from "./ThemeToggle";
 
 export default function UploadPhoto() {
   const navigate = useNavigate();
   const [_photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -33,11 +56,11 @@ export default function UploadPhoto() {
   };
 
   return (
-    <div className="min-h-screen bg-white w-screen overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-[#0A1121] w-screen overflow-x-hidden">
       {/* Mobile Header - Only visible on mobile */}
       <div className="lg:hidden">
-        <div className="px-4 py-4 flex items-center">
-          <Link to="/languages" className="text-gray-900">
+        <div className="px-4 py-4 flex items-center justify-between">
+          <Link to="/languages" className="text-gray-900 dark:text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -53,12 +76,18 @@ export default function UploadPhoto() {
               />
             </svg>
           </Link>
+          <ThemeToggle />
         </div>
       </div>
 
       <div className="flex min-h-[calc(100vh-64px)]">
         {/* Left Section - Image (Hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 items-center justify-center p-8">
+        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 dark:bg-[#101935]/50 items-center justify-center p-8 relative">
+          {/* Theme toggle for desktop */}
+          <div className="absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
+
           <div className="max-w-md">
             <img
               src={onboardingImage}
@@ -66,10 +95,10 @@ export default function UploadPhoto() {
               className="w-full h-auto"
             />
             <div className="mt-8 text-center">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Upload your Photo
               </h2>
-              <p className="mt-4 text-gray-600">
+              <p className="mt-4 text-gray-600 dark:text-gray-300">
                 Add a personal touch to your profile
               </p>
             </div>
@@ -81,10 +110,10 @@ export default function UploadPhoto() {
           <div className="flex-1 flex flex-col lg:justify-center">
             <div className="w-full max-w-md mx-auto flex flex-col h-full lg:h-auto">
               <div className="mb-8">
-                <h1 className="text-2xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
                   Upload your Photo
                 </h1>
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2 text-gray-600 dark:text-gray-300">
                   Add a personal touch to your profile by uploading or taking a
                   photo.
                 </p>
@@ -92,12 +121,12 @@ export default function UploadPhoto() {
 
               <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Photo
                   </label>
                   <div
                     onClick={handleClickUpload}
-                    className="border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 p-6 h-48 flex flex-col items-center justify-center cursor-pointer"
+                    className="border-2 border-dashed border-gray-300 dark:border-[#1A2542] rounded-lg bg-gray-50 dark:bg-[#101935] p-6 h-48 flex flex-col items-center justify-center cursor-pointer"
                   >
                     <input
                       type="file"
@@ -115,7 +144,7 @@ export default function UploadPhoto() {
                       />
                     ) : (
                       <>
-                        <div className="w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center text-gray-400 mb-2">
+                        <div className="w-12 h-12 border border-gray-300 dark:border-[#1A2542] rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 mb-2">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -131,7 +160,7 @@ export default function UploadPhoto() {
                             />
                           </svg>
                         </div>
-                        <p className="text-sm text-gray-400">
+                        <p className="text-sm text-gray-400 dark:text-gray-500">
                           Click to upload a photo
                         </p>
                       </>
@@ -155,4 +184,3 @@ export default function UploadPhoto() {
     </div>
   );
 }
- 

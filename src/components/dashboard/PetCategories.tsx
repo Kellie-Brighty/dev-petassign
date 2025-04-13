@@ -58,7 +58,7 @@ export default function PetCategories() {
                   loading="lazy"
                 />
               </div>
-              <p className="mt-1 text-center text-xs font-medium">
+              <p className="mt-1 text-center text-xs font-medium text-gray-900 dark:text-white">
                 {category.name}
               </p>
             </Link>
@@ -74,7 +74,7 @@ export default function PetCategories() {
             to={`/category/${category.id}`}
             className="group"
           >
-            <div className="relative overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-md">
+            <div className="relative overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-md border border-gray-200 dark:border-[#1A2542]">
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
               <img
                 src={category.image}

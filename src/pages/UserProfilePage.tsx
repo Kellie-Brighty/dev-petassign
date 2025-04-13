@@ -1,11 +1,34 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomNavigation from "../components/dashboard/BottomNavigation";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function UserProfilePage() {
   const navigate = useNavigate();
   // const { userId } = useParams();
   const [activeTab, setActiveTab] = useState("explore");
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -72,12 +95,12 @@ export default function UserProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0A1121]">
       {/* Header */}
-      <header className="bg-white px-4 py-3 flex items-center sticky top-0 z-50 shadow-sm">
+      <header className="bg-white dark:bg-[#101935] px-4 py-3 flex items-center sticky top-0 z-50 shadow-sm border-b dark:border-[#1A2542]">
         <button onClick={() => navigate(-1)} className="p-1 mr-3">
           <svg
-            className="w-5 h-5 text-gray-700"
+            className="w-5 h-5 text-gray-700 dark:text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -90,14 +113,15 @@ export default function UserProfilePage() {
             />
           </svg>
         </button>
-        <h1 className="text-lg font-medium">Profile</h1>
+        <h1 className="text-lg font-medium dark:text-white flex-1">Profile</h1>
+        <ThemeToggle />
       </header>
 
       {/* Main Content */}
       <main className="pb-20">
         {/* Banner Image */}
         <div className="relative">
-          <div className="h-32 bg-gray-200 w-full">
+          <div className="h-32 bg-gray-200 dark:bg-[#1A2542] w-full">
             <img
               src={userProfile.bannerImage}
               alt="Banner"
@@ -107,7 +131,7 @@ export default function UserProfilePage() {
 
           {/* Profile Avatar - Positioned over banner */}
           <div className="absolute left-1/2 transform -translate-x-1/2 -bottom-12">
-            <div className="w-24 h-24 rounded-full border-4 border-white bg-white">
+            <div className="w-24 h-24 rounded-full border-4 border-white dark:border-[#101935] bg-white dark:bg-[#101935]">
               <img
                 src={userProfile.avatar}
                 alt={userProfile.name}
@@ -119,16 +143,18 @@ export default function UserProfilePage() {
 
         {/* Profile Info */}
         <div className="mt-14 text-center px-4">
-          <h1 className="text-xl font-bold">{userProfile.name}</h1>
-          <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+          <h1 className="text-xl font-bold dark:text-white">
+            {userProfile.name}
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
             {userProfile.bio}
           </p>
 
           {/* Skills Badges */}
           <div className="flex justify-center gap-2 mt-3">
-            <div className="inline-flex items-center bg-gray-100 px-3 py-1 rounded-full">
+            <div className="inline-flex items-center bg-gray-100 dark:bg-[#1A2542] px-3 py-1 rounded-full">
               <svg
-                className="w-4 h-4 mr-1 text-gray-500"
+                className="w-4 h-4 mr-1 text-gray-500 dark:text-gray-400"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -155,15 +181,17 @@ export default function UserProfilePage() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="text-xs">{userProfile.location}</span>
+              <span className="text-xs dark:text-white">
+                {userProfile.location}
+              </span>
             </div>
             {userProfile.languages.map((language, index) => (
               <div
                 key={index}
-                className="inline-flex items-center bg-gray-100 px-3 py-1 rounded-full"
+                className="inline-flex items-center bg-gray-100 dark:bg-[#1A2542] px-3 py-1 rounded-full"
               >
                 <svg
-                  className="w-4 h-4 mr-1 text-gray-500"
+                  className="w-4 h-4 mr-1 text-gray-500 dark:text-gray-400"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +211,7 @@ export default function UserProfilePage() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="text-xs">{language}</span>
+                <span className="text-xs dark:text-white">{language}</span>
               </div>
             ))}
           </div>
@@ -198,14 +226,17 @@ export default function UserProfilePage() {
 
         {/* Posts Label */}
         <div className="mt-6 px-4">
-          <h2 className="text-base font-medium">Posts</h2>
+          <h2 className="text-base font-medium dark:text-white">Posts</h2>
         </div>
 
         {/* Posts Grid */}
         <div className="mt-2 px-1">
           <div className="grid grid-cols-3 gap-1">
             {userProfile.posts.map((post) => (
-              <div key={post.id} className="aspect-square bg-gray-200">
+              <div
+                key={post.id}
+                className="aspect-square bg-gray-200 dark:bg-[#1A2542]"
+              >
                 <img
                   src={post.image}
                   alt=""

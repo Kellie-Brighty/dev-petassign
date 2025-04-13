@@ -62,7 +62,7 @@ export default function FeaturedPet() {
       {/* Mobile view - Single featured pet card */}
       <div className="lg:hidden px-4">
         <div className="w-full">
-          <div className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100">
+          <div className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden shadow-md border border-gray-100 dark:border-[#1A2542]">
             <div className="relative h-48">
               <img
                 src={featuredPet.image}
@@ -80,49 +80,63 @@ export default function FeaturedPet() {
               </div>
             </div>
             <div className="p-3">
-              <h3 className="font-medium text-sm text-gray-900">
+              <h3 className="font-medium text-sm text-gray-900 dark:text-white">
                 {featuredPet.name}
               </h3>
-              <p className="text-xs text-gray-500">{featuredPet.type}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {featuredPet.type}
+              </p>
 
               <div className="mt-2 flex items-center justify-between">
                 <div className="flex space-x-5">
                   <div className="text-xs">
-                    <span className="text-gray-500 text-[10px]">Price</span>
+                    <span className="text-gray-500 dark:text-gray-400 text-[10px]">
+                      Price
+                    </span>
                     <p className="font-semibold text-primary">
-                      ${featuredPet.price}
+                      ₦{featuredPet.price}
                     </p>
                   </div>
                   <div className="text-xs">
-                    <span className="text-gray-500 text-[10px]">Gender</span>
-                    <p className="font-medium text-gray-800">
+                    <span className="text-gray-500 dark:text-gray-400 text-[10px]">
+                      Gender
+                    </span>
+                    <p className="font-medium text-gray-800 dark:text-white">
                       {featuredPet.gender}
                     </p>
                   </div>
                   <div className="text-xs">
-                    <span className="text-gray-500 text-[10px]">Age</span>
-                    <p className="font-medium text-gray-800">
+                    <span className="text-gray-500 dark:text-gray-400 text-[10px]">
+                      Age
+                    </span>
+                    <p className="font-medium text-gray-800 dark:text-white">
                       {featuredPet.age}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-2 pt-2 border-t border-gray-100 flex items-center">
+              <div className="mt-2 pt-2 border-t border-gray-100 dark:border-[#1A2542] flex items-center">
                 <img
                   src={featuredPet.owner.avatar}
                   alt={featuredPet.owner.name}
-                  className="w-5 h-5 rounded-full mr-2 border border-gray-200"
+                  className="w-5 h-5 rounded-full mr-2 border border-gray-200 dark:border-[#1A2542]"
                 />
-                <span className="text-xs font-medium text-gray-700">
+                <span className="text-xs font-medium text-gray-700 dark:text-white">
                   {featuredPet.owner.name}
                 </span>
-                <span className="text-xs text-gray-500 ml-1 mr-1">•</span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-500 dark:text-gray-400 ml-1 mr-1">
+                  •
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   {featuredPet.owner.timeAgo}
                 </span>
-                <span className="text-xs text-gray-500 ml-1 mr-1">•</span>
-                <span className="text-xs text-gray-500">Kips Bay</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 ml-1 mr-1">
+                  •
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Kips Bay
+                </span>
               </div>
             </div>
           </div>
@@ -130,11 +144,11 @@ export default function FeaturedPet() {
       </div>
 
       {/* Desktop view - Row layout */}
-      <div className="hidden lg:flex space-x-5">
+      <div className="hidden lg:flex space-x-5 overflow-x-auto pb-2">
         {desktopFeaturedPets.map((pet, index) => (
           <div key={pet.id} className="w-52 flex-shrink-0">
             <Link to={`/pet/${pet.id}`} className="block group">
-              <div className="bg-white rounded-lg overflow-hidden h-36 mb-2 shadow-md border border-gray-100 group-hover:shadow-lg transition-shadow">
+              <div className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden h-36 mb-2 shadow-md border border-gray-100 dark:border-[#1A2542] group-hover:shadow-lg transition-shadow">
                 <img
                   src={pet.image}
                   alt={pet.name}
@@ -142,12 +156,14 @@ export default function FeaturedPet() {
                   loading="lazy"
                 />
               </div>
-              <h3 className="text-sm font-medium truncate text-gray-900 group-hover:text-primary transition-colors">
+              <h3 className="text-sm font-medium truncate text-gray-900 dark:text-white group-hover:text-primary transition-colors">
                 {pet.name}
               </h3>
-              <p className="text-xs text-gray-500 truncate">{pet.type}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                {pet.type}
+              </p>
               {index > 0 && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {index === 1
                     ? "0.8 miles away"
                     : index === 2

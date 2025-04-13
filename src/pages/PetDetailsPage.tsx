@@ -1,9 +1,33 @@
 // import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function PetDetailsPage() {
   const navigate = useNavigate();
   // const { id } = useParams();
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   // This would normally be fetched from an API based on the id
   const petDetails = {
@@ -28,12 +52,12 @@ export default function PetDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0A1121]">
       {/* Header */}
-      <header className="bg-white px-4 py-3 flex items-center sticky top-0 z-50 shadow-sm">
+      <header className="bg-white dark:bg-[#101935] px-4 py-3 flex items-center sticky top-0 z-50 shadow-sm border-b dark:border-[#1A2542]">
         <button onClick={() => navigate(-1)} className="p-1 mr-3">
           <svg
-            className="w-5 h-5 text-gray-700"
+            className="w-5 h-5 text-gray-700 dark:text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -49,11 +73,11 @@ export default function PetDetailsPage() {
         <input
           type="text"
           placeholder="Search feed, animals, breeds, etc"
-          className="w-full py-2 pl-8 pr-4 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+          className="w-full py-2 pl-8 pr-4 rounded-full border border-gray-200 dark:border-[#1A2542] dark:bg-[#1A2542] dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
         />
         <div className="absolute left-14 top-1/2 transform -translate-y-1/2">
           <svg
-            className="w-4 h-4 text-gray-400"
+            className="w-4 h-4 text-gray-400 dark:text-gray-500"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -66,12 +90,15 @@ export default function PetDetailsPage() {
             />
           </svg>
         </div>
+        <div className="ml-2">
+          <ThemeToggle />
+        </div>
       </header>
 
       {/* Main Content */}
       <main className="pb-20">
         {/* Pet Image */}
-        <div className="w-full aspect-square bg-white">
+        <div className="w-full aspect-square bg-white dark:bg-[#101935]">
           <img
             src={petDetails.image}
             alt={petDetails.name}
@@ -80,49 +107,61 @@ export default function PetDetailsPage() {
         </div>
 
         {/* Pet Details */}
-        <div className="p-4 bg-white">
-          <h1 className="text-base font-medium">{petDetails.name}</h1>
+        <div className="p-4 bg-white dark:bg-[#101935]">
+          <h1 className="text-base font-medium dark:text-white">
+            {petDetails.name}
+          </h1>
           <p className="text-primary text-xl font-semibold mt-1">
-            ${petDetails.price.toFixed(2)}
+            ₦{petDetails.price.toFixed(2)}
           </p>
         </div>
 
         {/* Description Section */}
-        <div className="mt-2 p-4 bg-white">
-          <h2 className="text-base font-medium mb-2">Description</h2>
-          <p className="text-sm text-gray-700 leading-relaxed">
+        <div className="mt-2 p-4 bg-white dark:bg-[#101935]">
+          <h2 className="text-base font-medium mb-2 dark:text-white">
+            Description
+          </h2>
+          <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
             {petDetails.description}
           </p>
 
           <div className="mt-4 flex space-x-8">
             <div>
-              <p className="text-xs text-gray-500">Gender</p>
-              <p className="text-sm font-medium">{petDetails.gender}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Gender</p>
+              <p className="text-sm font-medium dark:text-white">
+                {petDetails.gender}
+              </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500">Age</p>
-              <p className="text-sm font-medium">{petDetails.age}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Age</p>
+              <p className="text-sm font-medium dark:text-white">
+                {petDetails.age}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Location Section */}
-        <div className="mt-2 p-4 bg-white">
-          <h2 className="text-base font-medium mb-2">Location</h2>
-          <p className="text-sm font-medium">
+        <div className="mt-2 p-4 bg-white dark:bg-[#101935]">
+          <h2 className="text-base font-medium mb-2 dark:text-white">
+            Location
+          </h2>
+          <p className="text-sm font-medium dark:text-white">
             {petDetails.location.city}, {petDetails.location.region}
           </p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {petDetails.location.fullAddress}
           </p>
         </div>
 
         {/* Contact Details */}
-        <div className="mt-2 p-4 bg-white">
-          <h2 className="text-base font-medium mb-2">Contact Details</h2>
+        <div className="mt-2 p-4 bg-white dark:bg-[#101935]">
+          <h2 className="text-base font-medium mb-2 dark:text-white">
+            Contact Details
+          </h2>
           <div className="flex items-center space-x-3 mt-2">
             <svg
-              className="w-4 h-4 text-gray-600"
+              className="w-4 h-4 text-gray-600 dark:text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -134,11 +173,13 @@ export default function PetDetailsPage() {
                 d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
               />
             </svg>
-            <span className="text-sm">{petDetails.seller.phone}</span>
+            <span className="text-sm dark:text-white">
+              {petDetails.seller.phone}
+            </span>
           </div>
           <div className="flex items-center space-x-3 mt-2">
             <svg
-              className="w-4 h-4 text-gray-600"
+              className="w-4 h-4 text-gray-600 dark:text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -150,13 +191,15 @@ export default function PetDetailsPage() {
                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
             </svg>
-            <span className="text-sm">{petDetails.seller.email}</span>
+            <span className="text-sm dark:text-white">
+              {petDetails.seller.email}
+            </span>
           </div>
         </div>
       </main>
 
       {/* Bottom Fixed Button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t flex justify-center">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-[#101935] border-t dark:border-[#1A2542] flex justify-center">
         <button className="w-full bg-primary text-white py-3 rounded-lg font-medium">
           Contact Seller
         </button>

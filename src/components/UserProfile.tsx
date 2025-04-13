@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import onboardingImage from "../assets/onboarding-one.svg";
+import ThemeToggle from "./ThemeToggle";
 
 export default function UserProfile() {
   const navigate = useNavigate();
@@ -9,6 +10,28 @@ export default function UserProfile() {
     lastName: "",
     username: "",
   });
+  const [_isDarkMode, setIsDarkMode] = useState<boolean>(
+    document.documentElement.classList.contains("dark")
+  );
+
+  // Listen for theme changes across the app
+  useEffect(() => {
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    handleThemeChange();
+
+    // Listen for theme change events
+    document.addEventListener("themeChange", handleThemeChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("themeChange", handleThemeChange);
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,11 +40,11 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-white w-screen overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-[#0A1121] w-screen overflow-x-hidden">
       {/* Mobile Header - Only visible on mobile */}
       <div className="lg:hidden">
-        <div className="px-4 py-4 flex items-center">
-          <Link to="/verify" className="text-gray-900">
+        <div className="px-4 py-4 flex items-center justify-between">
+          <Link to="/verify" className="text-gray-900 dark:text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -37,12 +60,18 @@ export default function UserProfile() {
               />
             </svg>
           </Link>
+          <ThemeToggle />
         </div>
       </div>
 
       <div className="flex min-h-[calc(100vh-64px)]">
         {/* Left Section - Image (Hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 items-center justify-center p-8">
+        <div className="hidden lg:flex lg:w-1/2 bg-primary/5 dark:bg-[#101935]/50 items-center justify-center p-8 relative">
+          {/* Theme toggle for desktop */}
+          <div className="absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
+
           <div className="max-w-md">
             <img
               src={onboardingImage}
@@ -50,10 +79,10 @@ export default function UserProfile() {
               className="w-full h-auto"
             />
             <div className="mt-8 text-center">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Let's Get to Know You
               </h2>
-              <p className="mt-4 text-gray-600">
+              <p className="mt-4 text-gray-600 dark:text-gray-300">
                 Help us create a personalized experience for you in our
                 pet-loving community.
               </p>
@@ -66,10 +95,10 @@ export default function UserProfile() {
           <div className="flex-1 flex flex-col lg:justify-center">
             <div className="w-full max-w-md mx-auto flex flex-col h-full lg:h-auto">
               <div className="mb-8">
-                <h1 className="text-2xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
                   Tell Us About You
                 </h1>
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2 text-gray-600 dark:text-gray-300">
                   Please provide your information so we can create and
                   personalize your profile just for you
                 </p>
@@ -80,7 +109,7 @@ export default function UserProfile() {
                   <div>
                     <label
                       htmlFor="firstName"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
                       First Name
                     </label>
@@ -92,7 +121,7 @@ export default function UserProfile() {
                       onChange={(e) =>
                         setFormData({ ...formData, firstName: e.target.value })
                       }
-                      className="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-primary focus:border-primary"
+                      className="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-[#1A2542] border border-gray-200 dark:border-[#1A2542] rounded-lg focus:ring-primary focus:border-primary dark:text-white"
                       placeholder="Heritage"
                     />
                   </div>
@@ -100,7 +129,7 @@ export default function UserProfile() {
                   <div>
                     <label
                       htmlFor="lastName"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
                       Last Name
                     </label>
@@ -112,7 +141,7 @@ export default function UserProfile() {
                       onChange={(e) =>
                         setFormData({ ...formData, lastName: e.target.value })
                       }
-                      className="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-primary focus:border-primary"
+                      className="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-[#1A2542] border border-gray-200 dark:border-[#1A2542] rounded-lg focus:ring-primary focus:border-primary dark:text-white"
                       placeholder="Atiba"
                     />
                   </div>
@@ -120,7 +149,7 @@ export default function UserProfile() {
                   <div>
                     <label
                       htmlFor="username"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                     >
                       Username
                     </label>
@@ -132,7 +161,7 @@ export default function UserProfile() {
                       onChange={(e) =>
                         setFormData({ ...formData, username: e.target.value })
                       }
-                      className="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-primary focus:border-primary"
+                      className="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-[#1A2542] border border-gray-200 dark:border-[#1A2542] rounded-lg focus:ring-primary focus:border-primary dark:text-white"
                       placeholder="Dog_father17"
                     />
                   </div>

@@ -1,15 +1,14 @@
-
 export default function SearchBar() {
   return (
     <div className="relative">
       <input
         type="text"
         placeholder="Search feed, animals, breeds, etc."
-        className="w-full py-2 pl-8 pr-3 rounded-lg bg-gray-100 border-0 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+        className="w-full py-2 pl-8 pr-3 rounded-lg bg-gray-100 dark:bg-[#1A2542] border-0 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
       />
       <div className="absolute left-2.5 top-1/2 transform -translate-y-1/2">
         <svg
-          className="w-4 h-4 text-gray-500"
+          className="w-4 h-4 text-gray-500 dark:text-gray-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
