@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomNavigation from "../components/dashboard/BottomNavigation";
-import ThemeToggle from "../components/ThemeToggle";
+import BottomNavigation from "../../components/dashboard/BottomNavigation";
+import ThemeToggle from "../../components/ThemeToggle";
 
 interface ChatPreview {
   id: string;
@@ -275,7 +275,10 @@ export default function ChatListPage() {
 
       {/* Floating Action Button */}
       <div className="fixed bottom-20 right-4 z-50 lg:bottom-28">
-        <button className="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors">
+        <button
+          onClick={() => navigate("/create-post")}
+          className="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors"
+        >
           <svg
             className="w-6 h-6"
             fill="none"

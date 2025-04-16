@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomNavigation from "../components/dashboard/BottomNavigation";
-import ThemeToggle from "../components/ThemeToggle";
+import BottomNavigation from "../../components/dashboard/BottomNavigation";
+import ThemeToggle from "../../components/ThemeToggle";
 
 export default function UserProfilePage() {
   const navigate = useNavigate();
@@ -214,13 +214,6 @@ export default function UserProfilePage() {
                 <span className="text-xs dark:text-white">{language}</span>
               </div>
             ))}
-          </div>
-
-          {/* Message Button */}
-          <div className="mt-4">
-            <button className="bg-primary text-white w-full py-2.5 rounded-lg font-medium">
-              Message
-            </button>
           </div>
         </div>
 

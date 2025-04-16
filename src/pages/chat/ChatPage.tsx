@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ThemeToggle from "../components/ThemeToggle";
+import ThemeToggle from "../../components/ThemeToggle";
 
 interface Message {
   id: string;

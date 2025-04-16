@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import BottomNavigation from "../components/dashboard/BottomNavigation";
-import ThemeToggle from "../components/ThemeToggle";
+import { Link, useNavigate } from "react-router-dom";
+import BottomNavigation from "../../components/dashboard/BottomNavigation";
+import ThemeToggle from "../../components/ThemeToggle";
 
 // Adoption listings
 const adoptionListings = [
@@ -75,7 +75,7 @@ const adoptionListings = [
 ];
 
 export default function AdoptionsPage() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("adoptions");
   const [_isDarkMode, setIsDarkMode] = useState<boolean>(
     document.documentElement.classList.contains("dark")
@@ -328,7 +328,10 @@ export default function AdoptionsPage() {
                   <span>{listing.location}</span>
                   <span>{listing.date}</span>
                 </div>
-                <button className="w-full mt-1 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm">
+                <button
+                  onClick={() => navigate(`/adoption/${listing.id}`)}
+                  className="w-full mt-1 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm"
+                >
                   Adopt Me
                 </button>
               </div>
@@ -363,7 +366,10 @@ export default function AdoptionsPage() {
 
       {/* Floating Action Button */}
       <div className="fixed bottom-20 right-4 z-50 lg:bottom-28">
-        <button className="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors">
+        <button
+          onClick={() => navigate("/create-post")}
+          className="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors"
+        >
           <svg
             className="w-7 h-7"
             fill="none"

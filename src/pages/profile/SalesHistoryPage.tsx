@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomNavigation from "../components/dashboard/BottomNavigation";
-import ThemeToggle from "../components/ThemeToggle";
+import BottomNavigation from "../../components/dashboard/BottomNavigation";
+import ThemeToggle from "../../components/ThemeToggle";
 
 // Import SVG assets
-import cerealImage from "../assets/cereal.svg";
-import sleepCatImage from "../assets/sleep-cat.svg";
+import cerealImage from "../../assets/cereal.svg";
+import sleepCatImage from "../../assets/sleep-cat.svg";
 
-// Define types for the purchase items
-interface PurchaseItem {
+// Define types for the sales items
+interface SaleItem {
   id: string;
   name: string;
   category: string;
@@ -18,15 +18,15 @@ interface PurchaseItem {
   date: string;
 }
 
-// Group purchases by month
-interface MonthlyPurchases {
+// Group sales by month
+interface MonthlySales {
   month: string;
   year: number;
-  items: PurchaseItem[];
+  items: SaleItem[];
   total: number;
 }
 
-export default function PurchaseHistoryPage() {
+export default function SalesHistoryPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("account");
   const [_isDarkMode, setIsDarkMode] = useState<boolean>(
@@ -57,8 +57,8 @@ export default function PurchaseHistoryPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Mock purchase history data
-  const mockPurchaseHistory: MonthlyPurchases[] = [
+  // Mock sales history data
+  const mockSalesHistory: MonthlySales[] = [
     {
       month: "May",
       year: 2024,
@@ -104,7 +104,7 @@ export default function PurchaseHistoryPage() {
           category: "Pet food",
           subcategory: "Cat food",
           image: cerealImage,
-          price: 6.03,
+          price: 8.03, // Different price for one item in April
           date: "24 - 04",
         },
       ],
@@ -157,7 +157,7 @@ export default function PurchaseHistoryPage() {
             </svg>
           </button>
           <h1 className="text-lg font-medium text-gray-900 dark:text-white">
-            Purchase History
+            Sales History
           </h1>
         </div>
         <div className="flex items-center space-x-2">
@@ -182,9 +182,9 @@ export default function PurchaseHistoryPage() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto pb-20 lg:pb-8">
-        {/* Purchase History */}
+        {/* Sales History */}
         <div className="divide-y divide-gray-200 dark:divide-[#1A2542]">
-          {mockPurchaseHistory.map((monthData, index) => (
+          {mockSalesHistory.map((monthData, index) => (
             <div key={index} className="bg-white dark:bg-[#101935]">
               {/* Month Header */}
               <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-[#1A2542]">

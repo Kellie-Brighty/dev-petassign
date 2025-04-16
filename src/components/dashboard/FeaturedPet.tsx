@@ -1,5 +1,5 @@
 // import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 // Featured pet data for the main card
 const featuredPet = {
@@ -147,14 +147,22 @@ export default function FeaturedPet() {
       <div className="hidden lg:flex space-x-5 overflow-x-auto pb-2">
         {desktopFeaturedPets.map((pet, index) => (
           <div key={pet.id} className="w-52 flex-shrink-0">
-            <Link to={`/pet/${pet.id}`} className="block group">
-              <div className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden h-36 mb-2 shadow-md border border-gray-100 dark:border-[#1A2542] group-hover:shadow-lg transition-shadow">
+            <div className="block group">
+              <div className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden h-36 mb-2 shadow-md border border-gray-100 dark:border-[#1A2542] group-hover:shadow-lg transition-shadow relative">
                 <img
                   src={pet.image}
                   alt={pet.name}
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
+                <div className="absolute bottom-2 right-2">
+                  <button
+                    className="bg-primary rounded-lg px-3 py-1 text-xs font-medium shadow-md text-white hover:bg-primary-dark transition-colors"
+                    onClick={() => navigate(`/pet/${pet.id}`)}
+                  >
+                    View
+                  </button>
+                </div>
               </div>
               <h3 className="text-sm font-medium truncate text-gray-900 dark:text-white group-hover:text-primary transition-colors">
                 {pet.name}
@@ -171,7 +179,7 @@ export default function FeaturedPet() {
                     : "3.0 miles away"}
                 </p>
               )}
-            </Link>
+            </div>
           </div>
         ))}
       </div>

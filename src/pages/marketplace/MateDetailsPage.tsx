@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomNavigation from "../components/dashboard/BottomNavigation";
-import ChatOverlay from "../components/ChatOverlay";
-import ThemeToggle from "../components/ThemeToggle";
+import BottomNavigation from "../../components/dashboard/BottomNavigation";
+import ChatOverlay from "../../components/ChatOverlay";
+import ThemeToggle from "../../components/ThemeToggle";
 
 export default function MateDetailsPage() {
   const navigate = useNavigate();
@@ -263,7 +263,11 @@ export default function MateDetailsPage() {
       <div className="fixed bottom-16 left-0 right-0 p-4 bg-white dark:bg-[#101935] border-t dark:border-[#1A2542] flex justify-center">
         <button
           className="w-full bg-primary text-white py-3 rounded-lg font-medium"
-          onClick={() => setIsChatOpen(true)}
+          onClick={() =>
+            navigate(
+              `/chat/${mateDetails.owner.name.toLowerCase().replace(" ", "-")}`
+            )
+          }
         >
           Send a Message
         </button>

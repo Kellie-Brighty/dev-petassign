@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ThemeToggle from "../components/ThemeToggle";
-import BottomNavigation from "../components/dashboard/BottomNavigation";
+import ThemeToggle from "../../components/ThemeToggle";
+import BottomNavigation from "../../components/dashboard/BottomNavigation";
 
 export default function WithdrawalSuccessPage() {
   const navigate = useNavigate();

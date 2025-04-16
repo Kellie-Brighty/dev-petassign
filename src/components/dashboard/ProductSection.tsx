@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const products = [
   {
     id: 1,
-    name: "Cat food",
+    name: "Premium Dry Dog Food",
     rating: 4.9,
     reviews: 20205,
     image:
@@ -12,7 +12,7 @@ const products = [
   },
   {
     id: 2,
-    name: "Cat food",
+    name: "Gourmet Cat Food",
     rating: 4.8,
     reviews: 20213,
     image:
@@ -28,7 +28,7 @@ export default function ProductSection() {
           Animal Food
         </h2>
         <Link
-          to="/products"
+          to="/marketplace"
           className="text-sm text-gray-500 dark:text-gray-400"
         >
           &gt;
@@ -71,7 +71,7 @@ export default function ProductSection() {
                 </div>
               </div>
               <div className="px-2 pb-2">
-                <Link to="/product-details" className="block">
+                <Link to={`/pet-food/${product.id}`} className="block">
                   <button className="w-full py-1.5 text-center text-xs font-medium bg-primary text-white rounded-md hover:bg-primary-dark transition-colors">
                     View
                   </button>

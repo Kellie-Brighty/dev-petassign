@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import BottomNavigation from "../components/dashboard/BottomNavigation";
-import ThemeToggle from "../components/ThemeToggle";
+import BottomNavigation from "../../components/dashboard/BottomNavigation";
+import ThemeToggle from "../../components/ThemeToggle";
+import { useEffect } from "react";
+import { useState } from "react";
 
 // Add interface for category filter
 interface CategoryFilter {
@@ -197,7 +198,7 @@ export default function MarketplacePage() {
               {[...petFoodProducts, ...morePetFoodProducts].map((product) => (
                 <Link
                   key={product.id}
-                  to={`/product/${product.id}`}
+                  to={`/pet-food/${product.id}`}
                   className="bg-white dark:bg-[#101935] rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 dark:border-[#1A2542] overflow-hidden"
                 >
                   <div className="h-40">
@@ -452,7 +453,7 @@ export default function MarketplacePage() {
                         ({product.reviews})
                       </span>
                     </div>
-                    <Link to={`/product/${product.id}`} className="block mt-1">
+                    <Link to={`/pet-food/${product.id}`} className="block mt-1">
                       <button className="w-full py-1 text-center text-[10px] font-medium bg-primary text-white rounded-md">
                         View
                       </button>
@@ -519,7 +520,8 @@ export default function MarketplacePage() {
               {morePetListings.map((listing) => (
                 <div
                   key={listing.id}
-                  className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden shadow-sm"
+                  className="bg-white dark:bg-[#101935] rounded-lg overflow-hidden shadow-sm cursor-pointer"
+                  onClick={() => navigate(`/pet/${listing.id}`)}
                 >
                   <div className="h-24">
                     <img
@@ -889,7 +891,10 @@ export default function MarketplacePage() {
 
       {/* Floating Action Button */}
       <div className="fixed bottom-20 right-4 z-50 lg:bottom-28">
-        <button className="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors">
+        <button
+          onClick={() => navigate("/create-post")}
+          className="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors"
+        >
           <svg
             className="w-7 h-7"
             fill="none"

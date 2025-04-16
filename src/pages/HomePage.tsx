@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "../components/dashboard/SearchBar";
 import PetCategories from "../components/dashboard/PetCategories";
 import FeaturedPet from "../components/dashboard/FeaturedPet";
@@ -29,6 +29,7 @@ const newsItems = [
 ];
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("explore");
   const [_isDarkMode, setIsDarkMode] = useState<boolean>(
     document.documentElement.classList.contains("dark")
@@ -66,7 +67,10 @@ export default function HomePage() {
           <h1 className="text-base font-semibold dark:text-white">
             Hi Heritage,
           </h1>
-          <div className="text-xs text-primary font-medium">
+          <div
+            className="text-xs text-primary font-medium cursor-pointer"
+            onClick={() => navigate("/wallet/buy-credits")}
+          >
             20 credits left
           </div>
         </div>
@@ -131,6 +135,27 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
+            </div>
+            <div
+              className="flex items-center px-3 py-1.5 bg-blue-50 dark:bg-[#1A2542] rounded-full cursor-pointer hover:bg-blue-100 dark:hover:bg-[#283057] transition-colors"
+              onClick={() => navigate("/wallet/buy-credits")}
+            >
+              <span className="text-primary font-medium text-sm">
+                20 credits
+              </span>
+              <svg
+                className="w-4 h-4 ml-1 text-primary"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
             </div>
             <button className="w-10 h-10 rounded-full bg-gray-100 dark:bg-[#1A2542] flex items-center justify-center text-gray-500 dark:text-gray-300">
               <svg
@@ -298,6 +323,28 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+
+      {/* Floating Action Button */}
+      <div className="fixed bottom-20 right-4 z-50 lg:bottom-28">
+        <button
+          onClick={() => navigate("/create-post")}
+          className="w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors"
+        >
+          <svg
+            className="w-7 h-7"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+        </button>
+      </div>
 
       {/* Bottom Navigation - Show on both mobile and desktop */}
       <div className="fixed bottom-0 left-0 right-0 z-50">
