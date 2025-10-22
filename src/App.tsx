@@ -64,6 +64,8 @@ import AdoptionPostSuccessPage from "./pages/pet-adoption/AdoptionPostSuccessPag
 import AdoptionMembershipPage from "./pages/adoptions/AdoptionMembershipPage";
 import AdoptionDetailsPage from "./pages/adoptions/AdoptionDetailsPage";
 import AdoptionRequestSubmittedPage from "./pages/adoptions/AdoptionRequestSubmittedPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
 
 function App() {
   return (
@@ -226,6 +228,8 @@ function App() {
           path="/adoption-request-submitted"
           element={<AdoptionRequestSubmittedPage />}
         />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
       </Routes>
     </Router>
   );
