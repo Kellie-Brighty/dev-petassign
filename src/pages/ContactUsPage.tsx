@@ -307,10 +307,10 @@ export default function ContactUsPage() {
                 </h3>
               </div>
               <a
-                href="tel:+2349044725708"
+                href="tel:+2348021183476"
                 className="text-primary hover:text-primary-dark transition-colors"
               >
-                +234 904 472 5708
+                0802 118 3476
               </a>
             </div>
           </div>
